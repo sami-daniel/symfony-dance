@@ -2,11 +2,10 @@
 
 namespace App\Embeddables;
 
-use Doctrine\ORM\Mapping\Embeddable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[Embeddable]
+#[ORM\Embeddable]
 class Password {
     #[ORM\Column(length: 72)]
     #[Assert\NotBlank]

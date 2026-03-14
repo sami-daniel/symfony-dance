@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\Embedded;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: '`users`')]
 class User
 {
     #[ORM\Id]
@@ -23,7 +23,7 @@ class User
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Email(mode: 'strict')]
+    #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
     private string $email;
 
     #[Embedded(class: Password::class, columnPrefix: false)]

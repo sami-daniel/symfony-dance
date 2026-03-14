@@ -81,7 +81,7 @@ if ($isDebug) {
 }
 
 $stdin = file_get_contents('php://stdin');
-@file_put_contents($temp_file, $stdin !== '' ? $stdin : file_get_contents($filePath));
+@file_put_contents($temp_file, '' !== $stdin ? $stdin : file_get_contents($filePath));
 
 $fixerBinary = $currentDir.'/vendor/bin/php-cs-fixer';
 if (!file_exists($fixerBinary)) {

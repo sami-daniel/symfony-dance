@@ -7,6 +7,9 @@ framework:
 
     #esi: true
     #fragments: true
+    request:
+        formats:
+            json: ['application/json']
 
 when@test:
     framework:

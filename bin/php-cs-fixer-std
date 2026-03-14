@@ -1,0 +1,110 @@
+#!/usr/bin/env php
+<?php
+
+// See https://github.com/zed-industries/zed/issues/4477#issuecomment-1909486612 for more info
+
+// Inspired from https://gist.github.com/vuon9/be16429f751e12f72e220c18777d9bc7
+// To use this script:
+// - Change #!/usr/local/bin/php to your PHP binary path
+// - chmod +x php-cs-fixer-std.php
+// - Make symlink: ln -s ~/Downloads/php-cs-fixer-std.php /usr/local/bin/php-cs-fixer-std
+// - Use: php-cs-fixer-std fix --rules=@Symfony src/PhpFile.php
+// - This supports only one file and --debug flag to see the file content before and after the fix
+
+function is_fixer_command(string $a)
+{
+    return in_array($a, [
+        'check',
+        'describe',
+        'fix',
+        'help',
+        'list',
+        'list-files',
+        'list-sets',
+        'self-update',
+    ]);
+}
+
+$currentDir = getcwd();
+$temp_file = tempnam(sys_get_temp_dir(), 'fix_');
+$isDebug = false;
+
+array_shift($argv);
+
+$files = [];
+$commandFound = false;
+$commandAndArguments = [];
+
+foreach ($argv as $k => $param) {
+    if ('' == $param) {
+        continue;
+    }
+
+    if ('--debug' == $param) {
+        $isDebug = true;
+        continue;
+    }
+
+    if (is_fixer_command($param)) {
+        if (!$commandFound) {
+            $commandFound = true;
+        }
+
+        $commandAndArguments[] = $param;
+        continue;
+    }
+
+    if ('-' == substr($param, 0, 1)) {
+        $commandAndArguments[] = $param;
+        continue;
+    }
+
+    $files[] = $param;
+}
+
+if (!$commandFound) {
+    exit('No php-cs-fixer command provided\n');
+}
+
+if (0 === count($files)) {
+    exit('No files provided\n');
+}
+
+if (count($files) > 1) {
+    exit('Only one file allowed\n');
+}
+
+$filePath = $files[0];
+if ($isDebug) {
+    echo 'Current dir: '.$currentDir.PHP_EOL;
+    echo 'Absolute file path: '.$filePath.PHP_EOL;
+}
+
+$stdin = file_get_contents('php://stdin');
+@file_put_contents($temp_file, $stdin !== '' ? $stdin : file_get_contents($filePath));
+
+$fixerBinary = $currentDir.'/vendor/bin/php-cs-fixer';
+if (!file_exists($fixerBinary)) {
+    exit('php-cs-fixer binary not found in vendor/bin. Run: composer install');
+}
+
+$output = [];
+$returnCode = 0;
+$arguments = implode(' ', $commandAndArguments);
+if ($isDebug) {
+    echo 'Command and arguments: '.$arguments.PHP_EOL;
+}
+
+$cmd = sprintf('%s %s %s', $fixerBinary, $arguments, $temp_file);
+if ($isDebug) {
+    echo 'Forwarded command: '.$cmd.PHP_EOL;
+}
+
+exec($cmd, $output, $returnCode);
+
+if ($returnCode) {
+    exit($returnCode);
+}
+
+echo file_get_contents($temp_file);
+unlink($temp_file);

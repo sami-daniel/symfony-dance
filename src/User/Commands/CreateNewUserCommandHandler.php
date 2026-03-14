@@ -8,7 +8,6 @@ use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Throwable;
 
 #[AsMessageHandler(handles: CreateNewUserCommand::class)]
 final readonly class CreateNewUserCommandHandler implements CommandHandler
@@ -37,10 +36,10 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
         try {
             $entityManager->persist($user);
             $entityManager->flush();
-        } catch(Throwable $e) {
+        } catch (\Throwable $e) {
             // TODO: Implement logging and decide a rethrow policy
 
-            if ( $connection->isTransactionActive() ) {
+            if ($connection->isTransactionActive()) {
                 $connection->rollBack();
             }
 

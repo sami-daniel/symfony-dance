@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Embeddables;
+namespace App\User\Embeddables;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;

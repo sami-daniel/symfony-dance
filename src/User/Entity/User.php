@@ -6,7 +6,6 @@ use App\User\Embeddables\Password;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
@@ -18,12 +17,9 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
     private string $name;
 
-    #[ORM\Column(length: 254)]
-    #[Assert\NotBlank]
-    #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
+    #[ORM\Column(length: 255, unique: true)]
     private string $email;
 
     #[Embedded(class: Password::class, columnPrefix: false)]

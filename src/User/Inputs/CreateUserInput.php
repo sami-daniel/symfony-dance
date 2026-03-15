@@ -4,8 +4,10 @@ namespace App\User\Inputs;
 
 use App\User\Embeddables\Password;
 use App\User\Entity\User;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[OA\Schema]
 readonly class CreateUserInput
 {
     public function __construct(

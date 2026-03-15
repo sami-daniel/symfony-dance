@@ -3,7 +3,9 @@
 namespace App\User\Outputs;
 
 use App\User\Entity\User;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema]
 final readonly class UserOutput
 {
     public function __construct(

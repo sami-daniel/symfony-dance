@@ -25,6 +25,9 @@ class User
     #[Embedded(class: Password::class, columnPrefix: false)]
     private Password $password;
 
+    #[ORM\Column(options: ['default' => 'now()'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -64,5 +67,10 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

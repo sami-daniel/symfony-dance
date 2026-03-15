@@ -15,13 +15,13 @@ final readonly class UserOutput
         public string $name,
         #[OA\Property(description: 'User email', example: 'jhon@example.com')]
         public string $email,
-        #[OA\Property(description: 'Creation date of the User', example: new \DateTimeImmutable())]
-        public ?\DateTimeImmutable $createdAt,
+        #[OA\Property(description: 'Creation date of the User', example: '2026-03-15T06:10:50+00:00')]
+        public \DateTimeImmutable $createdAt,
     ) {
     }
 
     public static function fromUser(User $src): self
     {
-        return self($src->getId(), $src->getName(), $src->getEmail(), $src->createdAt);
+        return new self($src->getId(), $src->getName(), $src->getEmail(), $src->getCreatedAt());
     }
 }

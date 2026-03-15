@@ -13,6 +13,7 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,15 +38,20 @@ class UserController extends BaseController
     public function createUser(
         #[MapRequestPayload] CreateUserInput $payload,
     ): JsonResponse {
-        $this->messageBus->dispatch(new CreateNewUserCommand($payload));
+        $email = $payload->email;
 
         try {
-            $email = $payload->email;
-            /** @var UserOutput $user */
-            $user = $this->handle(new GetUserByEmailQuery($email));
-        } catch (UserAlreadyExistsException $e) {
-            return $this->conflict("An user with {$email} email already exists");
+            $this->messageBus->dispatch(new CreateNewUserCommand($payload));
+        } catch (ExceptionInterface $e) {
+            if ($e->getPrevious() instanceof UserAlreadyExistsException) {
+                return $this->conflict("An user with {$email} email already exists");
+            }
+
+            throw $e;
         }
+
+        /** @var UserOutput $user */
+        $user = $this->handle(new GetUserByEmailQuery($email));
 
         return $this->created($user, $this->generateUrl('users.get', ['id' => $user->id]));
     }

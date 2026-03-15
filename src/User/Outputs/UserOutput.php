@@ -20,8 +20,8 @@ final readonly class UserOutput
     ) {
     }
 
-    public static function fromUser(User $src): self
+    public static function fromUser(User $user): self
     {
-        return new self($src->getId(), $src->getName(), $src->getEmail(), $src->getCreatedAt());
+        return new self($user->getId(), $user->getName(), $user->getEmail(), $user->getCreatedAt());
     }
 }

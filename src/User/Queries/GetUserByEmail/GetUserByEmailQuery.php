@@ -2,9 +2,9 @@
 
 namespace App\User\Queries\GetUserByEmail;
 
-use App\Shared\Queries\QueryInterface;
+use App\Shared\Queries\Query;
 
-final readonly class GetUserByEmailQuery extends QueryInterface
+final readonly class GetUserByEmailQuery extends Query
 {
     public function __construct(
         public string $email,

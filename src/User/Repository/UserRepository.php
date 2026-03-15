@@ -21,9 +21,8 @@ class UserRepository extends ServiceEntityRepository
 
     public function findByEmail(string $email): ?User
     {
-        return $this->connection->fetchOne(
-            'SELECT * FROM users WHERE email = :email',
-            ['email' => $email]
-        ) ?: null;
+        return $this->findOneBy([
+            'email' => $email,
+        ]);
     }
 }

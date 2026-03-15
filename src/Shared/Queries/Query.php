@@ -2,6 +2,6 @@
 
 namespace App\Shared\Queries;
 
-interface QueryInterface
+abstract class Query
 {
 }

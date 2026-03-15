@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[AsEventListener(event: KernelEvents::EXCEPTION)]
 final class JsonExceptionListener
@@ -20,6 +21,22 @@ final class JsonExceptionListener
         }
 
         $exception = $event->getThrowable();
+
+        $previous = $exception->getPrevious();
+        if ($previous instanceof ValidationFailedException) {
+            $errors = [];
+            foreach ($previous->getViolations() as $violation) {
+                $errors[] = [
+                    'property' => $violation->getPropertyPath(),
+                    'message' => $violation->getMessage(),
+                ];
+            }
+
+            $event->setResponse(new JsonResponse(['errors' => $errors], 422));
+
+            return;
+        }
+
         $status = $exception instanceof HttpExceptionInterface
             ? $exception->getStatusCode()
             : 500;

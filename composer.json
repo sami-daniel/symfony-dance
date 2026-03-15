@@ -11,6 +11,7 @@
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
         "egulias/email-validator": "^4.0",
+        "nelmio/api-doc-bundle": "^5.9",
         "phpdocumentor/reflection-docblock": "^6.0",
         "phpstan/phpdoc-parser": "^2.3",
         "saboohy/httpstatus": "^3.0",

@@ -4,7 +4,7 @@ namespace App\User\Queries\GetUserByID;
 
 use App\Shared\Queries\Query;
 use App\Shared\Queries\QueryHandler;
-use App\User\Entity\User;
+use App\User\Outputs\UserOutput;
 use App\User\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -17,8 +17,10 @@ final readonly class GetUserByIDQueryHandler implements QueryHandler
     }
 
     /** @param GetUserByIDQuery $query */
-    public function __invoke(Query $query): ?User
+    public function __invoke(Query $query): ?UserOutput
     {
-        return $this->repository->find($query->id);
+        return ($user = $this->repository->find($query->id))
+                ? UserOutput::fromUser($user)
+                : null;
     }
 }

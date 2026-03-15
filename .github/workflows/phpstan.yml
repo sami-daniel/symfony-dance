@@ -16,11 +16,11 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: "8.5"
           coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        uses: ./.github/actions/bootstrap-composer
 
       - name: Run PHPStan
         run: composer phpstan:analyze

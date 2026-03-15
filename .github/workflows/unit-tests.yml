@@ -20,7 +20,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        uses: ./.github/actions/bootstrap-composer
 
       - name: Run unit tests
         run: composer tests --testsuite unit

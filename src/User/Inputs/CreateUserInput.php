@@ -23,9 +23,9 @@ readonly class CreateUserInput
         #[OA\Property(description: 'Password (min 8 chars, must include uppercase and number)', example: 'Secret123')]
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 72)]
-        #[Assert\Regex(pattern: '/[AZ]/', message: 'Must have an uppercase letter.')]
-        #[Assert\Regex(pattern: '/[09]/', message: 'Must have a number.')]
-        #[Assert\Regex(pattern: '/^[AZaz09]+$/', message: 'Only letters and numbers are allowed.')]
+        #[Assert\Regex(pattern: '/[A-Z]/', message: 'Must have an uppercase letter.')]
+        #[Assert\Regex(pattern: '/[0-9]/', message: 'Must have a number.')]
+        #[Assert\Regex(pattern: '/^[A-Za-z0-9]+$/', message: 'Only letters and numbers are allowed.')]
         public string $password,
     ) {
     }

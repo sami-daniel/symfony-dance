@@ -69,7 +69,7 @@
         "make:migration": "php bin/console make:migration",
         "exec:migrations": "php bin/console doctrine:migrations:migrate",
         "exec:tests": "php bin/phpunit",
-        "phpstan:analyze": "vendor/bin/phpstan analyze src",
+        "phpstan:analyze": "vendor/bin/phpstan analyze src tests",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"

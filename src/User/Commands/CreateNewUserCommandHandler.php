@@ -36,6 +36,7 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
         try {
             $entityManager->persist($user);
             $entityManager->flush();
+            $connection->commit();
         } catch (\Throwable $e) {
             // TODO: Implement logging and decide a rethrow policy
 

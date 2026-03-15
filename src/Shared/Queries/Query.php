@@ -2,6 +2,6 @@
 
 namespace App\Shared\Queries;
 
-abstract class Query
+abstract readonly class Query
 {
 }

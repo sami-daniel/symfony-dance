@@ -5,9 +5,9 @@ namespace App\User\Controller;
 use App\Shared\Http\BaseController;
 use App\User\Commands\CreateNewUserCommand;
 use App\User\Entity\User;
+use App\User\Inputs\CreateUserInput;
 use App\User\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\User\Queries\GetUserByID\GetUserByIDQuery;
-use App\User\Requests\CreateUserRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Messenger\HandleTrait;
@@ -26,11 +26,11 @@ class UserController extends BaseController
 
     #[Route('', methods: ['POST'])]
     public function createUser(
-        #[MapRequestPayload] CreateUserRequest $request,
+        #[MapRequestPayload] CreateUserInput $payload,
     ): JsonResponse {
-        $this->messageBus->dispatch(new CreateNewUserCommand($request));
+        $this->messageBus->dispatch(new CreateNewUserCommand($payload));
         /** @var User $user */
-        $user = $this->handle(new GetUserByEmailQuery($request->email));
+        $user = $this->handle(new GetUserByEmailQuery($payload->email));
 
         return $this->created($user, $this->generateUrl('users.get', ['id' => $user->getId()]));
     }

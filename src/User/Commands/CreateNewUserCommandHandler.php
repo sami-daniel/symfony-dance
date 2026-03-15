@@ -22,13 +22,13 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
     public function __invoke(Command $command): void
     {
         $repository = $this->repository;
-        $email = $command->request->email;
+        $email = $command->input->email;
 
         if ($repository->findByEmail($email)) {
             throw UserAlreadyExistsException::withEmail($email);
         }
 
-        $user = $command->request->toUser();
+        $user = $command->input->toUser();
 
         $entityManager = $this->entityManager;
         $connection = $entityManager->getConnection();

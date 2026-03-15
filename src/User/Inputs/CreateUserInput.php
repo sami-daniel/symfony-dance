@@ -1,12 +1,12 @@
 <?php
 
-namespace App\User\Requests;
+namespace App\User\Inputs;
 
 use App\User\Embeddables\Password;
 use App\User\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
 
-readonly class CreateUserRequest
+readonly class CreateUserInput
 {
     public function __construct(
         #[Assert\NotBlank]
@@ -18,9 +18,9 @@ readonly class CreateUserRequest
 
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 72)]
-        #[Assert\Regex(pattern: '/[A-Z]/', message: 'Must have an uppercase letter.')]
-        #[Assert\Regex(pattern: '/[0-9]/', message: 'Must have a number.')]
-        #[Assert\Regex(pattern: '/^[A-Za-z0-9]+$/', message: 'Only letters and numbers are allowed.')]
+        #[Assert\Regex(pattern: '/[AZ]/', message: 'Must have an uppercase letter.')]
+        #[Assert\Regex(pattern: '/[09]/', message: 'Must have a number.')]
+        #[Assert\Regex(pattern: '/^[AZaz09]+$/', message: 'Only letters and numbers are allowed.')]
         public string $password,
     ) {
     }
@@ -30,7 +30,7 @@ readonly class CreateUserRequest
         return (new User())
             ->setEmail($this->email)
             ->setPassword(
-                new Password()
+                (new Password())
                     ->setValue($this->password)
             )
             ->setName($this->name);

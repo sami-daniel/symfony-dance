@@ -36,4 +36,13 @@ abstract class BaseController extends AbstractController
 
         return $this->json($data, Client::NOT_FOUND->value);
     }
+
+    protected function conflict(?string $errorMessage = null): JsonResponse
+    {
+        $data = $errorMessage ? [
+            'error' => $errorMessage,
+        ] : null;
+
+        return $this->json($data, Client::CONFLICT->value);
+    }
 }

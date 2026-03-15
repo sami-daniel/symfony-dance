@@ -4,6 +4,7 @@ namespace App\User\Controller;
 
 use App\Shared\Http\BaseController;
 use App\User\Commands\CreateNewUserCommand;
+use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Inputs\CreateUserInput;
 use App\User\Outputs\UserOutput;
 use App\User\Queries\GetUserByEmail\GetUserByEmailQuery;
@@ -37,8 +38,14 @@ class UserController extends BaseController
         #[MapRequestPayload] CreateUserInput $payload,
     ): JsonResponse {
         $this->messageBus->dispatch(new CreateNewUserCommand($payload));
-        /** @var UserOutput $user */
-        $user = $this->handle(new GetUserByEmailQuery($payload->email));
+
+        try {
+            $email = $payload->email;
+            /** @var UserOutput $user */
+            $user = $this->handle(new GetUserByEmailQuery($email));
+        } catch (UserAlreadyExistsException $e) {
+            return $this->conflict("An user with {$email} email already exists");
+        }
 
         return $this->created($user, $this->generateUrl('users.get', ['id' => $user->id]));
     }

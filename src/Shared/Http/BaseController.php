@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Shared\Http;
 
 use Saboohy\HttpStatus\Client;
@@ -11,7 +13,7 @@ abstract class BaseController extends AbstractController
 {
     protected function noContent(): JsonResponse
     {
-        return $this->json(null, Success::NO_CONTENT);
+        return $this->json(null, Success::NO_CONTENT->value);
     }
 
     protected function created(mixed $created, ?string $location = null): JsonResponse

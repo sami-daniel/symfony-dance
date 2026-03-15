@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\User\Embeddables;
 
 use Doctrine\ORM\Mapping as ORM;

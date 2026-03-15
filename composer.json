@@ -69,6 +69,7 @@
         "make:migration": "php bin/console make:migration",
         "exec:migrations": "php bin/console doctrine:migrations:migrate",
         "exec:tests": "php bin/phpunit",
+        "phpstan:analyze": "vendor/bin/phpstan analyze src",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
@@ -94,6 +95,7 @@
         "phpunit/phpunit": "^13.0",
         "symfony/browser-kit": "8.0.*",
         "symfony/css-selector": "8.0.*",
+        "phpstan/phpstan": "^2.1",
         "symfony/maker-bundle": "^1.66"
     }
 }

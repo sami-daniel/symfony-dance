@@ -11,7 +11,7 @@ abstract class BaseController extends AbstractController
 {
     protected function noContent(): JsonResponse
     {
-        return $this->json(null, Success::NO_CONTENT);
+        return $this->json(null, Success::NO_CONTENT->value);
     }
 
     protected function created(mixed $created, ?string $location = null): JsonResponse

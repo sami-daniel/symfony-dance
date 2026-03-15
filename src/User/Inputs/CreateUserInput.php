@@ -11,13 +11,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 readonly class CreateUserInput
 {
     public function __construct(
+        #[OA\Property(description: 'Full name of the user', example: 'John Doe')]
         #[Assert\NotBlank]
         public string $name,
 
+        #[OA\Property(description: 'Email address', example: 'john@example.com')]
         #[Assert\NotBlank]
         #[Assert\Email(mode: Assert\Email::VALIDATION_MODE_STRICT)]
         public string $email,
 
+        #[OA\Property(description: 'Password (min 8 chars, must include uppercase and number)', example: 'Secret123')]
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 72)]
         #[Assert\Regex(pattern: '/[AZ]/', message: 'Must have an uppercase letter.')]

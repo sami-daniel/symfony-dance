@@ -6,10 +6,12 @@ namespace App\User\Commands;
 
 use App\Shared\Commands\Command;
 use App\Shared\Commands\CommandHandler;
+use App\User\Entity\User;
 use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsMessageHandler(handles: CreateNewUserCommand::class)]
 final readonly class CreateNewUserCommandHandler implements CommandHandler
@@ -17,6 +19,7 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
     public function __construct(
         private UserRepository $repository,
         private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -25,12 +28,18 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
     {
         $repository = $this->repository;
         $email = $command->input->email;
+        $name = $command->input->name;
+        $pwd = $command->input->password;
 
         if ($repository->findByEmail($email)) {
             throw UserAlreadyExistsException::withEmail($email);
         }
 
-        $user = $command->input->toUser();
+        $user = (new User())
+            ->setName($name)
+            ->setEmail($email);
+        $pwd = $this->passwordHasher->hashPassword($user, $pwd);
+        $user->setPassword($pwd);
 
         $entityManager = $this->entityManager;
         $connection = $entityManager->getConnection();

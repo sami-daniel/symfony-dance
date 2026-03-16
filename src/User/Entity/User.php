@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\User\Entity;
 
-use App\User\Embeddables\Password;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Embedded;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,8 +25,8 @@ class User
     #[ORM\Column(length: 255, unique: true)]
     private string $email;
 
-    #[Embedded(class: Password::class, columnPrefix: false)]
-    private Password $password;
+    #[ORM\Column(length: 72)]
+    private string $password;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
@@ -65,13 +65,9 @@ class User
         return $this;
     }
 
-    public function getPassword(): Password
+    public function setPassword(string $password): static
     {
-        return $this->password;
-    }
-
-    public function setPassword(Password $password): static
-    {
+        // Weird, but we are keeping the domain clean
         $this->password = $password;
 
         return $this;
@@ -80,5 +76,21 @@ class User
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getRoles(): array
+    {
+        // TODO: Implement role system
+        return [];
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
     }
 }

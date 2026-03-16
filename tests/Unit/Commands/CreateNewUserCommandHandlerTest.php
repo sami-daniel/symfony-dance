@@ -13,14 +13,18 @@ use App\User\Repository\UserRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CreateNewUserCommandHandlerTest extends TestCase
 {
     private function createSut(
         UserRepository $repository,
         EntityManagerInterface $entityManager,
+        ?UserPasswordHasherInterface $passwordHasher = null,
     ): CreateNewUserCommandHandler {
-        return new CreateNewUserCommandHandler($repository, $entityManager);
+        $passwordHasher ??= $this->createStub(UserPasswordHasherInterface::class);
+
+        return new CreateNewUserCommandHandler($repository, $entityManager, $passwordHasher);
     }
 
     public function testItCreatesANewUser(): void
@@ -28,8 +32,10 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $repository = $this->createMock(UserRepository::class);
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $connection = $this->createMock(Connection::class);
+        $passwordHasher = $this->createStub(UserPasswordHasherInterface::class);
 
         $entityManager->method('getConnection')->willReturn($connection);
+        $passwordHasher->method('hashPassword')->willReturn('hashed_password');
 
         $input = new CreateUserInput('John Doe', 'john@example.com', 'Secret123');
         $command = new CreateNewUserCommand($input);
@@ -42,7 +48,7 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $entityManager->expects($this->once())->method('flush');
         $connection->expects($this->once())->method('commit');
 
-        ($this->createSut($repository, $entityManager))($command);
+        ($this->createSut($repository, $entityManager, $passwordHasher))($command);
     }
 
     public function testItThrowsWhenUserAlreadyExists(): void
@@ -69,10 +75,12 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $repository = $this->createStub(UserRepository::class);
         $entityManager = $this->createStub(EntityManagerInterface::class);
         $connection = $this->createMock(Connection::class);
+        $passwordHasher = $this->createStub(UserPasswordHasherInterface::class);
 
         $repository->method('findByEmail')->willReturn(null);
         $entityManager->method('getConnection')->willReturn($connection);
         $entityManager->method('flush')->willThrowException(new \RuntimeException('DB error'));
+        $passwordHasher->method('hashPassword')->willReturn('hashed_password');
         $connection->method('isTransactionActive')->willReturn(false);
         $connection->expects($this->never())->method('rollBack');
 
@@ -81,7 +89,7 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $input = new CreateUserInput('John Doe', 'john@example.com', 'Secret123');
         $command = new CreateNewUserCommand($input);
 
-        ($this->createSut($repository, $entityManager))($command);
+        ($this->createSut($repository, $entityManager, $passwordHasher))($command);
     }
 
     public function testItRollsBackTransactionOnFailure(): void
@@ -89,10 +97,12 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $repository = $this->createStub(UserRepository::class);
         $entityManager = $this->createStub(EntityManagerInterface::class);
         $connection = $this->createMock(Connection::class);
+        $passwordHasher = $this->createStub(UserPasswordHasherInterface::class);
 
         $repository->method('findByEmail')->willReturn(null);
         $entityManager->method('getConnection')->willReturn($connection);
         $entityManager->method('flush')->willThrowException(new \RuntimeException('DB error'));
+        $passwordHasher->method('hashPassword')->willReturn('hashed_password');
         $connection->method('isTransactionActive')->willReturn(true);
         $connection->expects($this->once())->method('rollBack');
 
@@ -102,6 +112,6 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $input = new CreateUserInput('John Doe', 'john@example.com', 'Secret123');
         $command = new CreateNewUserCommand($input);
 
-        ($this->createSut($repository, $entityManager))($command);
+        ($this->createSut($repository, $entityManager, $passwordHasher))($command);
     }
 }

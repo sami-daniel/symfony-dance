@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\Inputs;
 
-use App\User\Embeddables\Password;
 use App\User\Entity\User;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,10 +35,7 @@ readonly class CreateUserInput
     {
         return (new User())
             ->setEmail($this->email)
-            ->setPassword(
-                (new Password())
-                    ->setValue($this->password)
-            )
+            ->setPassword($this->password)
             ->setName($this->name);
     }
 }

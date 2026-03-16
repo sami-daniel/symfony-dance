@@ -1,6 +1,8 @@
 security:
   password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+      algorithm: bcrypt
+      cost: 20
 
   providers:
     users_in_memory: { memory: null }

@@ -70,6 +70,7 @@
         "make:entity": "php bin/console make:entity",
         "make:migration": "php bin/console make:migration",
         "exec:migrations": "php bin/console doctrine:migrations:migrate",
+        "exec:migrations:rollback": "php bin/console doctrine:migrations:migrate prev",
         "tests": "php bin/phpunit",
         "phpstan:analyze": "vendor/bin/phpstan analyze src tests",
         "auto-scripts": {

@@ -23,4 +23,6 @@ jobs:
         uses: ./.github/actions/bootstrap-composer
 
       - name: Run unit tests
+        env:
+          APP_ENV: test
         run: composer tests --testsuite unit

@@ -9,7 +9,7 @@ use App\User\Inputs\CreateUserInput;
 use App\User\Outputs\UserOutput;
 use App\User\Queries\GetUserByID\GetUserByIDQuery;
 use App\User\Queries\GetUserByID\GetUserByIDQueryHandler;
-use App\User\Repository\UserRepository;
+use App\User\Repositories\UserRepository;
 use PHPUnit\Framework\TestCase;
 
 class GetUserByIDQueryHandlerTest extends TestCase

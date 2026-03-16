@@ -9,7 +9,7 @@ use App\User\Commands\CreateNewUserCommandHandler;
 use App\User\Entities\User;
 use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Inputs\CreateUserInput;
-use App\User\Repository\UserRepository;
+use App\User\Repositories\UserRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;

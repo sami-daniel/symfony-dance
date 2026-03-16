@@ -5,7 +5,10 @@ security:
       cost: 20
 
   providers:
-    users_in_memory: { memory: null }
+    app_users:
+      entity:
+        class: App\User\Entity\User
+        property: email
 
   firewalls:
     dev:
@@ -15,6 +18,7 @@ security:
     api:
       pattern: ^/api
       stateless: true
+      provider: app_users
       jwt: ~
 
   access_control:

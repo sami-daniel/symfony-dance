@@ -9,7 +9,7 @@ use App\User\Inputs\CreateUserInput;
 use App\User\Outputs\UserOutput;
 use App\User\Queries\GetUserByEmail\GetUserByEmailQuery;
 use App\User\Queries\GetUserByEmail\GetUserByEmailQueryHandler;
-use App\User\Repository\UserRepository;
+use App\User\Repositories\UserRepository;
 use PHPUnit\Framework\TestCase;
 
 class GetUserByEmailQueryHandlerTest extends TestCase

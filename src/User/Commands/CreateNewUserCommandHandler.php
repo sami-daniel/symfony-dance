@@ -8,7 +8,7 @@ use App\Shared\Commands\Command;
 use App\Shared\Commands\CommandHandler;
 use App\User\Entities\User;
 use App\User\Exceptions\UserAlreadyExistsException;
-use App\User\Repository\UserRepository;
+use App\User\Repositories\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;

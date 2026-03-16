@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Commands;
 
 use App\User\Commands\CreateNewUserCommand;
 use App\User\Commands\CreateNewUserCommandHandler;
-use App\User\Entity\User;
+use App\User\Entities\User;
 use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Inputs\CreateUserInput;
 use App\User\Repository\UserRepository;

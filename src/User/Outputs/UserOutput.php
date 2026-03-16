@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Outputs;
 
-use App\User\Entity\User;
+use App\User\Entities\User;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema]

@@ -6,7 +6,7 @@ namespace App\User\Commands;
 
 use App\Shared\Commands\Command;
 use App\Shared\Commands\CommandHandler;
-use App\User\Entity\User;
+use App\User\Entities\User;
 use App\User\Exceptions\UserAlreadyExistsException;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Inputs;
 
-use App\User\Entity\User;
+use App\User\Entities\User;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 

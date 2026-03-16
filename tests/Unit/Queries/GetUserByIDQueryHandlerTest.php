@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Queries;
 
-use App\User\Entity\User;
+use App\User\Entities\User;
 use App\User\Inputs\CreateUserInput;
 use App\User\Outputs\UserOutput;
 use App\User\Queries\GetUserByID\GetUserByIDQuery;

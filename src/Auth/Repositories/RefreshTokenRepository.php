@@ -17,4 +17,9 @@ class RefreshTokenRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RefreshToken::class);
     }
+
+    public function findByToken(string $token): ?RefreshToken
+    {
+        return $this->findOneBy(['token' => $token]);
+    }
 }

@@ -127,5 +127,4 @@ class RefreshTokenCommandHandlerTest extends TestCase
 
         $this->assertEquals($expiresAt, $persisted->getExpiresAt());
     }
-
 }

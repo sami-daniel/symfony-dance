@@ -33,9 +33,6 @@ readonly class CreateUserInput
 
     public function toUser(): User
     {
-        return (new User())
-            ->setEmail($this->email)
-            ->setPassword($this->password)
-            ->setName($this->name);
+        return new User($this->name, $this->email, $this->password);
     }
 }

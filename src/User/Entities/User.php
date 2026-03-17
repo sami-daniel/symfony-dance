@@ -31,8 +31,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct()
-    {
+    public function __construct(
+        string $name,
+        string $email,
+        string $password,
+    ) {
+        $this->email = $email;
+        $this->password = $password;
+        $this->name = $name;
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -44,33 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function setPassword(string $password): static
-    {
-        // Weird, but we are keeping the domain clean
-        $this->password = $password;
-
-        return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable
@@ -92,5 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
     }
 }

@@ -35,9 +35,7 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
             throw UserAlreadyExistsException::withEmail($email);
         }
 
-        $user = (new User())
-            ->setName($name)
-            ->setEmail($email);
+        $user = new User($name, $email, $pwd);
         $pwd = $this->passwordHasher->hashPassword($user, $pwd);
         $user->setPassword($pwd);
 

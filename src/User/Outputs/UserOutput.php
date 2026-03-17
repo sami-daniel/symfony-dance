@@ -24,6 +24,6 @@ final readonly class UserOutput
 
     public static function fromUser(User $user): self
     {
-        return new self($user->getId(), $user->getName(), $user->getEmail(), $user->getCreatedAt());
+        return new self($user->getId(), $user->getName(), $user->getUserIdentifier(), $user->getCreatedAt());
     }
 }

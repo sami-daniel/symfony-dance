@@ -44,7 +44,7 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $connection->expects($this->once())->method('beginTransaction');
         $entityManager->expects($this->once())
             ->method('persist')
-            ->with($this->callback(fn (User $user) => 'john@example.com' === $user->getEmail()));
+            ->with($this->callback(fn (User $user) => 'john@example.com' === $user->getUserIdentifier()));
         $entityManager->expects($this->once())->method('flush');
         $connection->expects($this->once())->method('commit');
 
@@ -59,7 +59,7 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $repository->expects($this->once())
             ->method('findByEmail')
             ->with('john@example.com')
-            ->willReturn(new User());
+            ->willReturn(new User('John Doe', 'john@example.com', 'hashed'));
 
         $this->expectException(UserAlreadyExistsException::class);
         $this->expectExceptionMessage("User with email 'john@example.com' already exists");

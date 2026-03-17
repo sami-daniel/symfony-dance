@@ -48,7 +48,11 @@ class CreateNewUserCommandHandlerTest extends TestCase
         $entityManager->expects($this->once())->method('flush');
         $connection->expects($this->once())->method('commit');
 
-        ($this->createSut($repository, $entityManager, $passwordHasher))($command);
+        $result = ($this->createSut($repository, $entityManager, $passwordHasher))($command);
+
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertSame('john@example.com', $result->getUserIdentifier());
+        $this->assertSame('John Doe', $result->getName());
     }
 
     public function testItThrowsWhenUserAlreadyExists(): void

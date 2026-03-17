@@ -24,7 +24,7 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
     }
 
     /** @param CreateNewUserCommand $command */
-    public function __invoke(Command $command): void
+    public function __invoke(Command $command): User
     {
         $repository = $this->repository;
         $email = $command->input->email;
@@ -46,6 +46,8 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
             $entityManager->persist($user);
             $entityManager->flush();
             $connection->commit();
+
+            return $user;
         } catch (\Throwable $e) {
             // TODO: Implement logging and decide a rethrow policy
 

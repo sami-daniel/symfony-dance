@@ -19,7 +19,7 @@ class RefreshToken
     /** @phpstan-ignore property.unusedType */
     private ?Uuid $id = null;
 
-    #[ORM\Column(length: 128)]
+    #[ORM\Column(length: 128, unique: true)]
     private string $token;
 
     #[ORM\Column]

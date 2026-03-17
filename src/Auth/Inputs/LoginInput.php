@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 readonly class LoginInput
 {
     public function __construct(
-        #[OA\Property(example: 'jhondoe@example.com')]
+        #[OA\Property(example: 'jhon@example.com')]
         public string $email,
         #[OA\Property(example: 'Secret123')]
         public string $password,

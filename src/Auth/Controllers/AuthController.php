@@ -6,17 +6,12 @@ namespace App\Auth\Controllers;
 
 use App\Auth\Commands\AuthenticateUser\AuthenticateUserCommand;
 use App\Auth\Commands\RefreshToken\RefreshTokenCommand;
-use App\Auth\Entities\RefreshToken;
 use App\Auth\Exceptions\InvalidCredentialsException;
+use App\Auth\Exceptions\InvalidRefreshTokenException;
 use App\Auth\Inputs\LoginInput;
 use App\Auth\Inputs\RefreshTokenInput;
 use App\Auth\Outputs\LoginOutput;
 use App\Shared\Http\BaseController;
-use App\User\Entities\User;
-use App\User\Exceptions\UserNotFound;
-use App\User\Repositories\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,10 +28,8 @@ class AuthController extends BaseController
     use HandleTrait;
 
     public function __construct(
+        /** @phpstan-ignore property.onlyWritten */
         private MessageBusInterface $messageBus,
-        private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager,
-        private JWTTokenManagerInterface $jwtTokenManager,
     ) {
     }
 
@@ -50,41 +43,35 @@ class AuthController extends BaseController
         #[MapRequestPayload] LoginInput $request,
     ): JsonResponse {
         try {
-            $this->messageBus->dispatch(new AuthenticateUserCommand($request));
+            return $this->ok($this->handle(new AuthenticateUserCommand($request)));
         } catch (ExceptionInterface $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof UserNotFound || $previous instanceof InvalidCredentialsException) {
-                return $this->json(['error' => 'Invalid credentials'], 401);
-            }
 
-            throw $e;
+            return match (true) {
+                $previous instanceof InvalidCredentialsException => $this->unathorized('Invalid email or password'),
+                default => throw $e,
+            };
         }
-
-        /** @var User $user */
-        $user = $this->userRepository->findByEmail($request->email);
-
-        $jwt = $this->jwtTokenManager->create($user);
-        $rawToken = bin2hex(random_bytes(32));
-        $refreshToken = new RefreshToken($user, $rawToken, new \DateTimeImmutable('+30 days'));
-
-        $this->entityManager->persist($refreshToken);
-        $this->entityManager->flush();
-
-        return $this->ok(new LoginOutput($jwt, $rawToken));
     }
 
-    #[Route('/refresh', name: 'auth.refresh', methods: ['POST'])]
-    #[OA\Post(summary: 'Refresh JWT using a refresh token')]
+    #[Route('/refresh', methods: ['POST'])]
+    #[OA\Post(summary: 'Rotates and refreshes the jwt token and the refresh token')]
     #[OA\RequestBody(required: true, content: new Model(type: RefreshTokenInput::class))]
-    #[OA\Response(response: 200, description: 'Tokens refreshed', content: new Model(type: LoginOutput::class))]
+    #[OA\Response(response: 200, description: 'Token refreshed with success', content: new Model(type: LoginOutput::class))]
     #[OA\Response(response: 401, description: 'Invalid or expired refresh token')]
     #[OA\Response(response: 422, description: 'Validation failed')]
     public function refresh(
         #[MapRequestPayload] RefreshTokenInput $request,
     ): JsonResponse {
-        /** @var LoginOutput $output */
-        $output = $this->handle(new RefreshTokenCommand($request));
+        try {
+            return $this->ok($this->handle(new RefreshTokenCommand($request->refreshToken)));
+        } catch (ExceptionInterface $e) {
+            $previous = $e->getPrevious();
 
-        return $this->ok($output);
+            return match (true) {
+                $previous instanceof InvalidRefreshTokenException => $this->unathorized('Invalid or expired refresh token'),
+                default => throw $e,
+            };
+        }
     }
 }

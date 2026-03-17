@@ -39,23 +39,12 @@ final readonly class CreateNewUserCommandHandler implements CommandHandler
         $pwd = $this->passwordHasher->hashPassword($user, $pwd);
         $user->setPassword($pwd);
 
-        $entityManager = $this->entityManager;
-        $connection = $entityManager->getConnection();
-        $connection->beginTransaction();
-        try {
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $connection->commit();
+        // TODO: Implement logging and decide a rethrow policy
+        $this->entityManager->wrapInTransaction(function () use ($user) {
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        });
 
-            return $user;
-        } catch (\Throwable $e) {
-            // TODO: Implement logging and decide a rethrow policy
-
-            if ($connection->isTransactionActive()) {
-                $connection->rollBack();
-            }
-
-            throw $e;
-        }
+        return $user;
     }
 }

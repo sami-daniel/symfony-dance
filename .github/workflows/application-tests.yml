@@ -10,23 +10,15 @@ jobs:
     name: Application Tests
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: 3ur2jQH3VHVl
-          POSTGRES_DB: app
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    env:
+      APP_ENV: test
+      DATABASE_PASSWORD: 3ur2jQH3VHVl
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start database
+        run: docker compose up -d --wait
 
       - name: Setup PHP
         uses: ./.github/actions/setup-php
@@ -35,24 +27,13 @@ jobs:
         uses: ./.github/actions/bootstrap-composer
 
       - name: Generate JWT keys
-        env:
-          APP_ENV: test
-        run: php bin/console lexik:jwt:generate-keypair --skip-if-exists
+        run: composer jwt:generate-keypair
 
       - name: Create test database
-        env:
-          APP_ENV: test
-          DATABASE_URL: "postgresql://app:3ur2jQH3VHVl@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
-        run: php bin/console doctrine:database:create --no-interaction
+        run: composer db:create --no-interaction
 
       - name: Run migrations
-        env:
-          APP_ENV: test
-          DATABASE_URL: "postgresql://app:3ur2jQH3VHVl@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
-        run: php bin/console doctrine:migrations:migrate --no-interaction
+        run: composer exec:migrations --no-interaction
 
       - name: Run application tests
-        env:
-          APP_ENV: test
-          DATABASE_URL: "postgresql://app:3ur2jQH3VHVl@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
         run: composer tests:application

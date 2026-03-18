@@ -28,8 +28,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup PHP
+        uses: ./.github/actions/setup-php
+
       - name: Install dependencies
         uses: ./.github/actions/bootstrap-composer
+
+      - name: Generate JWT keys
+        env:
+          APP_ENV: test
+        run: php bin/console lexik:jwt:generate-keypair --skip-if-exists
 
       - name: Create test database
         env:

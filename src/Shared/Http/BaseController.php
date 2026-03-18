@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class BaseController extends AbstractController
 {
+    /** @return array<string, string>|null */
+    private function mountError(?string $e): ?array
+    {
+        return $e ? [
+            'error' => $e,
+        ] : null;
+    }
+
     protected function noContent(): JsonResponse
     {
         return $this->json(null, Success::NO_CONTENT->value);
@@ -32,19 +40,16 @@ abstract class BaseController extends AbstractController
 
     protected function notFound(?string $errorMessage = null): JsonResponse
     {
-        $data = $errorMessage ? [
-            'error' => $errorMessage,
-        ] : null;
-
-        return $this->json($data, Client::NOT_FOUND->value);
+        return $this->json($this->mountError($errorMessage), Client::NOT_FOUND->value);
     }
 
     protected function conflict(?string $errorMessage = null): JsonResponse
     {
-        $data = $errorMessage ? [
-            'error' => $errorMessage,
-        ] : null;
+        return $this->json($this->mountError($errorMessage), Client::CONFLICT->value);
+    }
 
-        return $this->json($data, Client::CONFLICT->value);
+    protected function unathorized(?string $errorMessage = null): JsonResponse
+    {
+        return $this->json($this->mountError($errorMessage), Client::UNAUTHORIZED->value);
     }
 }

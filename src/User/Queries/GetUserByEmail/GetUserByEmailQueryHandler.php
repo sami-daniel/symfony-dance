@@ -7,7 +7,7 @@ namespace App\User\Queries\GetUserByEmail;
 use App\Shared\Queries\Query;
 use App\Shared\Queries\QueryHandler;
 use App\User\Outputs\UserOutput;
-use App\User\Repository\UserRepository;
+use App\User\Repositories\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: GetUserByEmailQuery::class)]

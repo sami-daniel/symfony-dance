@@ -1,0 +1,39 @@
+name: Application Tests
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  application:
+    name: Application Tests
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: test
+      DATABASE_PASSWORD: 3ur2jQH3VHVl
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start database
+        run: docker compose up -d --wait
+
+      - name: Setup PHP
+        uses: ./.github/actions/setup-php
+
+      - name: Install dependencies
+        uses: ./.github/actions/bootstrap-composer
+
+      - name: Generate JWT keys
+        run: composer jwt:generate-keypair
+
+      - name: Create test database
+        run: composer db:create --no-interaction
+
+      - name: Run migrations
+        run: composer exec:migrations --no-interaction
+
+      - name: Run application tests
+        run: composer tests:application

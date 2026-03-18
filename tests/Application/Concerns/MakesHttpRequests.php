@@ -18,7 +18,7 @@ trait MakesHttpRequests
     }
 
     /**
-     * @param array<int,mixed> $body
+     * @param array<string,mixed> $body
      */
     private function post(string $uri, array $body = []): void
     {
@@ -34,7 +34,7 @@ trait MakesHttpRequests
     }
 
     /**
-     * @param array<int,mixed> $body
+     * @param array<string,mixed> $body
      */
     private function patch(string $uri, array $body = []): void
     {

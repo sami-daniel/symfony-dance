@@ -28,14 +28,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.5"
-          coverage: none
-
       - name: Install dependencies
         uses: ./.github/actions/bootstrap-composer
+
+      - name: Create test database
+        env:
+          APP_ENV: test
+          DATABASE_URL: "postgresql://app:3ur2jQH3VHVl@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+        run: php bin/console doctrine:database:create --no-interaction
 
       - name: Run migrations
         env:
@@ -47,4 +47,4 @@ jobs:
         env:
           APP_ENV: test
           DATABASE_URL: "postgresql://app:3ur2jQH3VHVl@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
-        run: composer tests --testsuite application
+        run: composer tests:application

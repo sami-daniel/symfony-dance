@@ -25,4 +25,4 @@ jobs:
       - name: Run unit tests
         env:
           APP_ENV: test
-        run: composer tests --testsuite unit
+        run: composer tests:unit

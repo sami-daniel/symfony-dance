@@ -6,5 +6,5 @@ namespace App\Shared\Commands;
 
 interface CommandHandler
 {
-    public function __invoke(Command $command): void;
+    public function __invoke(Command $command): mixed;
 }

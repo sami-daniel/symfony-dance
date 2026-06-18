@@ -1,0 +1,25 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: ./.github/actions/setup-php
+
+      - name: Install dependencies
+        uses: ./.github/actions/bootstrap-composer
+
+      - name: Run unit tests
+        env:
+          APP_ENV: test
+        run: composer tests:unit
